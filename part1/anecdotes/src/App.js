@@ -1,5 +1,13 @@
 import { useState } from 'react'
 
+const Header = (props) => {
+  return (
+    <div>
+      <h1>{props.name}</h1>
+    </div>
+  )
+}
+
 const Button = (props) => (
   <button onClick={props.handleClick}>
     {props.text}
@@ -35,12 +43,27 @@ const App = () => {
     copy[selected] += 1
     setArray(copy)
   }  
+  const maxIndex = () =>{
+    let index = 0
+    let max = 0
+    for(let i =0; i< number; i++){
+      if(array[i] > max){
+        max = array[i]
+        index = i
+      }
+    }
+    return index
+  }
+  // console.log(array)
   return (
     <div>
+      <Header name={"Anecdote of the day"} />
       <p>{anecdotes[selected]}</p>
       <p>has {array[selected]} votes</p>
       <Button handleClick={handleVoteClick} text="vote" />
       <Button handleClick={handleClick} text="next anecdote" />
+      <Header name={"Anecdote with most votes"} />
+      <p>{anecdotes[maxIndex()]}</p>
     </div>
   )
 }
