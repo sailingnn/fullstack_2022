@@ -22,6 +22,13 @@ const Button = (props) => (
 )
 
 const Statistics = (props) => {
+  if (props.sum === 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
   return (
     <div>
       <Content text="good" number={props.good} />
@@ -34,20 +41,7 @@ const Statistics = (props) => {
   )
 }
 
-const Average = (props) => {
-  if (props.allClicks.length === 0) {
-    return (
-      <div>
-        the app is used by pressing the buttons
-      </div>
-    )
-  }
-  return (
-    <div>
-      button press history: {props.allClicks.join(' ')}
-    </div>
-  )
-}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
