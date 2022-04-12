@@ -10,9 +10,13 @@ const Header = (props) => {
 const StatisticLine = (props) => {
   // console.log(props)
   return (
-    <div>
-      <p> {props.text} {props.value} </p>
-    </div>
+    <tbody>
+      <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+    </tr>
+      {/* <p> {props.text} {props.value} </p> */}
+    </tbody>
   )
 }
 const Button = (props) => (
@@ -30,14 +34,14 @@ const Statistics = (props) => {
     )
   }
   return (
-    <div>
+    <table>
       <StatisticLine text="good" value={props.good} />
       <StatisticLine text="neutral" value={props.neutral} />
       <StatisticLine text="bad" value={props.bad} />
       <StatisticLine text="all" value={props.sum} />
       <StatisticLine text="average" value={props.average} />
       <StatisticLine text="positive" value={props.positive} />
-    </div>
+    </table>
   )
 }
 
