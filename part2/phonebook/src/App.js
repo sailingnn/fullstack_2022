@@ -23,7 +23,7 @@ const Persons = ({persons, newFilter}) =>{
     persons.filter(person=>
       person.name.toLowerCase().indexOf(newFilter.toLowerCase()) !== -1
     ).map(person => 
-      <Person key={person.name} person={person} />
+      <Person key={person.id} person={person} />
     )
   )
 }
@@ -41,17 +41,17 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   const handleNameChange = (event) => {
-    console.log('handleNameChange', event.target.value)
+    // console.log('handleNameChange', event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log('handleNumberChange', event.target.value)
+    // console.log('handleNumberChange', event.target.value)
     setNewNumber(event.target.value)
   }
 
   const handleFilterChange = (event) =>{
-    console.log('handleFilterChange', event.target.value)
+    // console.log('handleFilterChange', event.target.value)
     setNewFilter(event.target.value)
   }
 
@@ -67,7 +67,8 @@ const App = () => {
     } else {
       const nameObject = {
         name: newName,
-        number: newNumber
+        number: newNumber,
+        id:persons.length + 1
       }     
       setPersons(persons.concat(nameObject))
     }
