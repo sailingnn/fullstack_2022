@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const Button = (props) => {
+  const name=props.id
+  return(
+  <button onClick={props.handleShow.bind(this, name)}>
+    {props.text}
+  </button>
+  )
+}
+
 const Filter = ({value, onChange}) => <div>find countries <input value={value} onChange={onChange} /></div>
 
 const Many = () => <p>Too many matches, specify another filter</p>
 
-const More = ({countryname}) =>{
+const More = ({countryname, handleShow}) =>{
   // console.log(countryname)
   return(
-    <p>{countryname}</p>
+    <p>{countryname}  <Button id={countryname} handleShow={handleShow} text="show" /> </p>
   )
 } 
 
@@ -43,18 +52,19 @@ const One = ({country}) =>{
   )
 }
 
-const Countries = ({countries, newFilter}) =>{
+const Countries = ({countries, newFilter, handleShow}) =>{
   // console.log('countries', countries)
   const filtered = countries.filter(country=>
     country.name.common.toLowerCase().indexOf(newFilter.toLowerCase()) !== -1
   )
+
   if(filtered.length > 10){
     return <Many />
   }else if(filtered.length > 1){
     return(
       filtered.map(country =>
         // console.log(country.name.common)
-        <More key={country.name.common} countryname={country.name.common} />
+        <More key={country.name.common} countryname={country.name.common} handleShow={handleShow} />
         )
     )
   }else{
@@ -81,6 +91,11 @@ function App() {
   }, [])  
 
 
+  const handleShow = (name, e) => {
+    // console.log(name)
+    setNewFilter(name)
+  }
+
   const handleFilterChange = (event) =>{
     console.log('handleFilterChange', event.target.value)
     setNewFilter(event.target.value)
@@ -89,7 +104,7 @@ function App() {
   return (
     <div>
       <Filter value={newFilter} onChange={handleFilterChange} />
-      <Countries countries={countries} newFilter={newFilter} />
+      <Countries countries={countries} newFilter={newFilter} handleShow={handleShow}/>
     </div>
   )
 }
