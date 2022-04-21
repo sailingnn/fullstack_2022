@@ -46,11 +46,11 @@ const Weather = ({country}) => {
   // console.log('api_key', api_key)
   // const api = ("https://api.openweathermap.org/data/2.5/weather?lat=" + latlng[0] + "&lon=" + latlng[1] + "&appid=" + api_key) 
   const api = ''.concat("https://api.openweathermap.org/data/2.5/weather?lat=", latlng[0], "&lon=", latlng[1], "&appid=", api_key)
-  console.log('api', api)
+  // console.log('api', api)
   const getData = () => {
     axios.get(api).then(response => {
-      console.log('weather got')
-      console.log(response.data)
+      // console.log('weather got')
+      // console.log(response.data)
       // setWeather(response.data)
       setTemp(response.data.main.temp)
       setPic("http://openweathermap.org/img/wn/" + response.data.weather[0].icon + "@2x.png")
@@ -60,8 +60,7 @@ const Weather = ({country}) => {
   }
   useEffect(getData, [])
   console.log('temp',temp)
-  // const pic = ("http://openweathermap.org/img/wn/" + weather.weather[0].icon + "@2x.png")
-  console.log('icon picture:', pic)
+  // console.log('icon picture:', pic)
   return(
     <div>
       <h2>Weather in {country.capital}</h2>
@@ -122,7 +121,8 @@ function App() {
   useEffect(() => {
     console.log('effect')
     axios
-      .get('http://localhost:3001/countries')
+      .get('https://restcountries.com/v3.1/all')
+      // .get('http://localhost:3001/countries')
       .then(response => {
         console.log('promise fulfilled')
         setCountries(response.data)
