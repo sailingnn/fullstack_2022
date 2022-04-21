@@ -34,6 +34,44 @@ const Languages = ({languages}) => {
   )
 }
 
+const Weather = ({country}) => {
+  // const [weather, setWeather] = useState([])
+  const [temp, setTemp] = useState(0)
+  const [pic, setPic] = useState('')
+  const [wind, setWind] = useState(0)
+
+  let api_key = process.env.REACT_APP_API_KEY
+  api_key = api_key.replace(/'/g, "")
+  const latlng = country.capitalInfo.latlng
+  // console.log('api_key', api_key)
+  // const api = ("https://api.openweathermap.org/data/2.5/weather?lat=" + latlng[0] + "&lon=" + latlng[1] + "&appid=" + api_key) 
+  const api = ''.concat("https://api.openweathermap.org/data/2.5/weather?lat=", latlng[0], "&lon=", latlng[1], "&appid=", api_key)
+  console.log('api', api)
+  const getData = () => {
+    axios.get(api).then(response => {
+      console.log('weather got')
+      console.log(response.data)
+      // setWeather(response.data)
+      setTemp(response.data.main.temp)
+      setPic("http://openweathermap.org/img/wn/" + response.data.weather[0].icon + "@2x.png")
+      setWind(response.data.wind.speed)
+    })
+    .catch(error => console.log('error', error))
+  }
+  useEffect(getData, [])
+  console.log('temp',temp)
+  // const pic = ("http://openweathermap.org/img/wn/" + weather.weather[0].icon + "@2x.png")
+  console.log('icon picture:', pic)
+  return(
+    <div>
+      <h2>Weather in {country.capital}</h2>
+      <p>temprature {temp} Celcius</p>
+      <img src={pic}></img>
+      <p>wind {wind}m/s</p>
+    </div>
+  )
+}
+
 const One = ({country}) =>{
   // console.log('languages:', Object.values(country.languages))
   const languages = Object.values(country.languages)
@@ -48,6 +86,7 @@ const One = ({country}) =>{
       <Languages languages={languages} />
       </ul>
       <img src={country.flags.png} alt={country.name.common}></img>
+      <Weather country={country} />
       </div>
   )
 }
