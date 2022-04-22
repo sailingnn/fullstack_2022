@@ -75,7 +75,7 @@ const App = () => {
       setPersons(persons.filter(p => p.id != person.id))
     }
   }
-
+  // console.log("test id", persons[4].id)
   const addName = (event) => {
     event.preventDefault()
 
@@ -83,14 +83,26 @@ const App = () => {
       return item.name === newName
     })
 
+    const nameObject = {
+      name: newName,
+      number: newNumber,
+      // id:persons.length + 1
+    } 
+
     if (index !== -1) {
-      window.alert(newName + ' is already added to phonebook')
+      // window.alert(newName + ' is already added to phonebook')
+      if (window.confirm(newName + ' is already added to phonebook, replace the old number with a new one?')) {
+        // console.log('id?', index)
+        const id = persons[index].id
+        personService
+          .update(id, nameObject)
+          .then(returnedPerson => {
+            // console.log('returned update', returnedPerson)
+            setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+          })
+      }
     } else {
-      const nameObject = {
-        name: newName,
-        number: newNumber,
-        // id:persons.length + 1
-      }     
+    
       personService
         .create(nameObject)
         .then(returnedPerson => {
