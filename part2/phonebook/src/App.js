@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
-const Person = ({ person }) => <p>{person.name} {person.number} </p>
+const Person = ({ person, handleDelete }) => {  
+  return(
+    <p>{person.name} {person.number} <button onClick={handleDelete.bind(this, person)}>
+    delete
+  </button>
+  </p>
+  )  
+}
 
 const Filter = ({value, onChange}) => <div>filter shown with<input value={value} onChange={onChange} /></div>
 
@@ -18,13 +25,13 @@ const PersonForm = ({addName, newName, handleNameChange, newNumber, handleNumber
   )
 }
 
-const Persons = ({persons, newFilter}) =>{
+const Persons = ({persons, newFilter, handleDelete}) =>{
   // console.log('persons', persons)
   return(
     persons.filter(person=>
       person.name.toLowerCase().indexOf(newFilter.toLowerCase()) !== -1
     ).map(person => 
-      <Person key={person.id} person={person} />
+      <Person key={person.id} person={person} handleDelete={handleDelete} />
     )
   )
 }
@@ -38,11 +45,10 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
@@ -61,6 +67,15 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const handleDelete = (person, e) =>{
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      // console.log('delete...', person.name)
+      personService
+        .deleteID(person.id)
+      setPersons(persons.filter(p => p.id != person.id))
+    }
+  }
+
   const addName = (event) => {
     event.preventDefault()
 
@@ -74,9 +89,14 @@ const App = () => {
       const nameObject = {
         name: newName,
         number: newNumber,
-        id:persons.length + 1
+        // id:persons.length + 1
       }     
-      setPersons(persons.concat(nameObject))
+      personService
+        .create(nameObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        })
+      // setPersons(persons.concat(nameObject))
     }
     setNewName('')
     setNewNumber('')
@@ -97,7 +117,7 @@ const App = () => {
 
       <h3>Numbers</h3>
       
-      <Persons persons={persons} newFilter={newFilter} />
+      <Persons persons={persons} newFilter={newFilter} handleDelete={handleDelete} />
     </div>
   )
 }
