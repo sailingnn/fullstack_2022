@@ -1,6 +1,27 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
+const Notification = ({ message }) => {
+  const notificationStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  }
+  if (message === null || message==='') {
+    return null
+  }
+
+  return (
+    <div style={notificationStyle} >
+      {message}
+    </div>
+  )
+}
+
 const Person = ({ person, handleDelete }) => {  
   return(
     <p>{person.name} {person.number} <button onClick={handleDelete.bind(this, person)}>
@@ -42,6 +63,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [infoMessage, setInfoMessage] = useState('')
 
   useEffect(() => {
     console.log('effect')
@@ -99,6 +121,12 @@ const App = () => {
           .then(returnedPerson => {
             // console.log('returned update', returnedPerson)
             setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+            setInfoMessage(
+              `Changed number of ${newName} to ${newNumber}`
+            )
+            setTimeout(() => {
+              setInfoMessage(null)
+            }, 5000)
           })
       }
     } else {
@@ -107,6 +135,12 @@ const App = () => {
         .create(nameObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setInfoMessage(
+            `Added ${newName}`
+          )
+          setTimeout(() => {
+            setInfoMessage(null)
+          }, 5000)
         })
       // setPersons(persons.concat(nameObject))
     }
@@ -117,7 +151,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={infoMessage} />
       <Filter value={newFilter} onChange={handleFilterChange} />
 
       <h3>add a new</h3>
