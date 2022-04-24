@@ -1,22 +1,13 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Notification = ({ message }) => {
-  const notificationStyle = {
-    color: 'green',
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  }
-  if (message === null || message==='') {
+const Notification = ({ message, noteStyle }) => {
+  if (message === null) {
     return null
   }
 
   return (
-    <div style={notificationStyle} >
+    <div style={noteStyle} >
       {message}
     </div>
   )
@@ -63,7 +54,20 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [infoMessage, setInfoMessage] = useState('')
+  const [infoMessage, setInfoMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  const infoStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  }
+
+  const errorStyle = {...infoStyle, color: 'red'}
 
   useEffect(() => {
     console.log('effect')
@@ -94,7 +98,13 @@ const App = () => {
       // console.log('delete...', person.name)
       personService
         .deleteID(person.id)
-      setPersons(persons.filter(p => p.id != person.id))
+        .catch(error=>{
+          setErrorMessage(`Information of ${person.name} has already been removed from server`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+        setPersons(persons.filter(p => p.id != person.id))
     }
   }
   // console.log("test id", persons[4].id)
@@ -128,6 +138,13 @@ const App = () => {
               setInfoMessage(null)
             }, 5000)
           })
+          .catch(error=>{
+            setErrorMessage(`Information of ${newName} has already been removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+            setPersons(persons.filter(p => p.id != id))
+          })
       }
     } else {
     
@@ -151,7 +168,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={infoMessage} />
+      <Notification message={infoMessage} noteStyle={infoStyle} />
+      <Notification message={errorMessage} noteStyle={errorStyle} />
       <Filter value={newFilter} onChange={handleFilterChange} />
 
       <h3>add a new</h3>
